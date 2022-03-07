@@ -1,5 +1,6 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(title: 'Startup Name Generator',
         home: RandomWords());
-
   }
 }
 
@@ -139,14 +139,12 @@ class _RandomWordsState extends State<RandomWords> {
 
 class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
-
   @override
   _RandomWordsState createState() => _RandomWordsState();
 }
 
 class AppController extends ChangeNotifier {
   static AppController instance = AppController();
-
   bool isSwitched = false;
   changeView() {
     isSwitched = !isSwitched;
