@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter/foundation.dart';
 
 
 void main() {
   runApp(const MyApp());
 }
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Startup Name Generator',
+    return MaterialApp(title: 'Startup Generator',
         home: RandomWords());
   }
 }
-
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = <WordPair>{};
   final _biggerFont = const TextStyle(fontSize: 18);
+  // Variáveis dos nomes das Startups
+  late String StartupFirstWord; late String StartupSecondWord;
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +65,20 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildGridView() {
-    return GridView.count(
-      crossAxisCount: 2,
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 3,
-      children: List.generate(_suggestions.length, (int i) {
-        final index = i ~/ 2;
-        if (i >= _suggestions.length || _suggestions.length <= 0) {
-          _suggestions.addAll(generateWordPairs().take(10));
+    return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3,
+            crossAxisSpacing:5,
+            mainAxisSpacing: 16),
+        itemBuilder: (BuildContext ctx, index) {
+          final int index_qtd = index;
+          if (index_qtd >= _suggestions.length) {
+            _suggestions.addAll(generateWordPairs().take(10));
+
+          }
+          return _buildRow(_suggestions[index_qtd]);
         }
-        return _buildRow(_suggestions[i]);
-      }),
     );
   }
 
@@ -96,26 +107,30 @@ class _RandomWordsState extends State<RandomWords> {
         style: _biggerFont,
       ),
       tileColor: Colors.white,
-      trailing: Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        semanticLabel: alreadySaved ? 'Remove from favorites' : 'Save',
-        color: alreadySaved ? Colors.deepPurple : null,
+      trailing: GestureDetector(
+        child: Icon(
+          alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.deepPurple : null,
+          semanticLabel: alreadySaved ? 'Remove from favorites' : 'Save',
+        ),
+        onTap: () {
+          setState(() {
+            if (alreadySaved) {
+              _saved.remove(pair);
+            } else {
+              _saved.add(pair);
+            }
+          });
+        },
       ),
       onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => WordsEdition(context, pair)));
       },
     );
   }
-
   void _pushSaved() {
-    Navigator.of(context).push(MaterialPageRoute
-    <void>(builder: (context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
       final tiles = _saved.map((pair) {
         return ListTile(
             title: Text(
@@ -135,16 +150,80 @@ class _RandomWordsState extends State<RandomWords> {
       );
     }));
   }
+  Widget WordsEdition(BuildContext context, WordPair pair) {
+    return Scaffold(appBar: AppBar(
+        title: Text("Edition Page"),
+        //style: _biggerFont, nao entendi pq nao da pra deixar _biggerfont(rever isso)
+        titleTextStyle: TextStyle(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  onChanged: (value) => {StartupFirstWord = value},
+                  decoration: InputDecoration(
+                      labelText: "First Word",
+                      border: OutlineInputBorder()),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  onChanged: (value) => {StartupSecondWord = value},
+                  decoration: InputDecoration(
+                      labelText: "Second Word",
+                      border: OutlineInputBorder()),
+                ),
+                SizedBox(
+                  height: 13,
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      onPressed: () {setState(() {_suggestions[_suggestions.indexOf(pair)] = WordPair(StartupFirstWord, StartupSecondWord);});
+                      Navigator.pop(context);
+                      },
+                      child: Text("Edit word"),
+                      color: Colors.white10,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      onPressed: () {setState(() {_suggestions.remove(_suggestions[_suggestions.indexOf(pair)]); });
+                      Navigator.pop(context);
+                      },
+                      child: Text("Delete word"),
+                      color: Colors.white10
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class RandomWords extends StatefulWidget {
-  const RandomWords({Key? key}) : super(key: key);
   @override
   _RandomWordsState createState() => _RandomWordsState();
 }
 
 class AppController extends ChangeNotifier {
   static AppController instance = AppController();
+
   bool isSwitched = false;
   changeView() {
     isSwitched = !isSwitched;
