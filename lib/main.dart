@@ -205,15 +205,7 @@ class _RandomWordsState extends State<RandomWords> {
                       child: Text("Delete word"),
                       color: Colors.white10
                     ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+                  ),)],),),),),);}
 }
 
 class RandomWords extends StatefulWidget {
