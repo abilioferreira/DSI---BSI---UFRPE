@@ -1,6 +1,10 @@
-# project_flutter
+# project_flutter - Tópico 4
 
 A new Flutter project.
++ Crie uma tela para editar a palavra da lista. Ao clicar no item da lista ou no card, exiba uma tela para a edição da palavra.
++ Use Named Routes para alternar entre as telas.
++ Use uma classe de repositório para armazenar 20 palavras.
+
 
 ## Getting Started
 
