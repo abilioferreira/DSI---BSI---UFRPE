@@ -1,6 +1,9 @@
-# project_flutter
+# project_flutter - Tópico 2
 
 A new Flutter project.
++ Implemente a parte 2 do app desenvolvido no Tópico 1;
++ Inclua um botão que permita que a visualização da listagem alternada para o modo de cards (ao invés de lista) com 2 cards por linha; - obs: infelizmente está apenas com 1 por card
+
 
 ## Getting Started
 
