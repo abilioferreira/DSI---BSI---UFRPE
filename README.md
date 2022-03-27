@@ -1,6 +1,8 @@
-# project_flutter
+# project_flutter - Tópico 3
 
 A new Flutter project.
++ Favoritar apenas no clique do ícone (e não ao clicar na linha/card);
++ Permitir a remoção do item.
 
 ## Getting Started
 
