@@ -6,15 +6,13 @@ import 'package:flutter/foundation.dart';
 void main() {
   runApp(const MyApp());
 }
-
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  My_App createState() => My_App();
 }
-
-class _MyAppState extends State<MyApp> {
+class My_App extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(title: 'Startup Generator',
@@ -22,16 +20,16 @@ class _MyAppState extends State<MyApp> {
   }
 }
 class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
+  final wordSuggestions = <WordPair>[];
   final _saved = <WordPair>{};
   final _biggerFont = const TextStyle(fontSize: 18);
   // Variáveis dos nomes das Startups
-  late String StartupFirstWord; late String StartupSecondWord;
+  late String startupFirstWord; late String startupSecondWord;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: AppController.instance,
+        animation: Controller.instance,
         builder: (context, child) {
           return MaterialApp(
               home: Scaffold(
@@ -43,9 +41,9 @@ class _RandomWordsState extends State<RandomWords> {
                     actions: [
                       Center(
                         child: Switch(
-                          value: AppController.instance.isSwitched,
+                          value: Controller.instance.isSwitched,
                           onChanged: (value) {
-                            AppController.instance.changeView();
+                            Controller.instance.changeView();
                           },
                         ),
                       ),
@@ -58,31 +56,25 @@ class _RandomWordsState extends State<RandomWords> {
                     titleTextStyle: TextStyle(color: Colors.white),
                     backgroundColor: Colors.deepPurple,
                   ),
-                  body: AppController.instance.isSwitched
-                      ? _buildGridView()
-                      : _buildSuggestions()));
+                  body: Controller.instance.isSwitched
+                      ? Grid()
+                      : Suggestions()));});
+  }
+  Widget Grid() {
+    return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, childAspectRatio: 3,
+            crossAxisSpacing:5, mainAxisSpacing: 16),
+        itemBuilder: (BuildContext ctx, index) {
+          final int index_qtd = index;
+          if (index_qtd >= wordSuggestions.length) {
+            wordSuggestions.addAll(generateWordPairs().take(100));
+          }
+          return buildRow(wordSuggestions[index_qtd]);
         });
   }
 
-  Widget _buildGridView() {
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3,
-            crossAxisSpacing:5,
-            mainAxisSpacing: 16),
-        itemBuilder: (BuildContext ctx, index) {
-          final int index_qtd = index;
-          if (index_qtd >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
-
-          }
-          return _buildRow(_suggestions[index_qtd]);
-        }
-    );
-  }
-
-  Widget _buildSuggestions() {
+  Widget Suggestions() {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemBuilder: (BuildContext _context, int i) {
@@ -90,16 +82,13 @@ class _RandomWordsState extends State<RandomWords> {
           return Divider();
         }
         final int index = i ~/ 2;
-
-        if (index >= _suggestions.length) {
-          _suggestions.addAll(generateWordPairs().take(10));
+        if (index >= wordSuggestions.length) {
+          wordSuggestions.addAll(generateWordPairs().take(10));
         }
-        return _buildRow(_suggestions[index]);
-      },
-    );
+        return buildRow(wordSuggestions[index]);
+      },);
   }
-
-  Widget _buildRow(WordPair pair) {
+  Widget buildRow(WordPair pair) {
     final alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
@@ -145,20 +134,18 @@ class _RandomWordsState extends State<RandomWords> {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Saved Suggestions"),
-        ),
-        body: ListView(children: divided),
+        ), body: ListView(children: divided),
       );
     }));
   }
   Widget WordsEdition(BuildContext context, WordPair pair) {
     return Scaffold(appBar: AppBar(
-        title: Text("Edition Page"),
-        //style: _biggerFont, nao entendi pq nao da pra deixar _biggerfont(rever isso)
-        titleTextStyle: TextStyle(color: Colors.white),
-      ),
+      title: Text("Edition Page"),
+      //style: _biggerFont, nao entendi pq nao da pra deixar _biggerfont(rever isso)
+      titleTextStyle: TextStyle(color: Colors.white),
+    ),
       body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
+        child: SizedBox(width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -166,28 +153,26 @@ class _RandomWordsState extends State<RandomWords> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextField(
-                  onChanged: (value) => {StartupFirstWord = value},
+                  onChanged: (value) => {startupFirstWord = value},
                   decoration: InputDecoration(
                       labelText: "First Word",
                       border: OutlineInputBorder()),
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10,
                 ),
                 TextField(
-                  onChanged: (value) => {StartupSecondWord = value},
+                  onChanged: (value) => {startupSecondWord = value},
                   decoration: InputDecoration(
                       labelText: "Second Word",
                       border: OutlineInputBorder()),
                 ),
-                SizedBox(
-                  height: 13,
+                SizedBox(height: 13,
                 ),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: RaisedButton(
-                      onPressed: () {setState(() {_suggestions[_suggestions.indexOf(pair)] = WordPair(StartupFirstWord, StartupSecondWord);});
+                      onPressed: () {setState(() {wordSuggestions[wordSuggestions.indexOf(pair)] = WordPair(startupFirstWord, startupSecondWord);});
                       Navigator.pop(context);
                       },
                       child: Text("Edit word"),
@@ -199,11 +184,11 @@ class _RandomWordsState extends State<RandomWords> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: RaisedButton(
-                      onPressed: () {setState(() {_suggestions.remove(_suggestions[_suggestions.indexOf(pair)]); });
-                      Navigator.pop(context);
-                      },
-                      child: Text("Delete word"),
-                      color: Colors.white10
+                        onPressed: () {setState(() {wordSuggestions.remove(wordSuggestions[wordSuggestions.indexOf(pair)]); });
+                        Navigator.pop(context);
+                        },
+                        child: Text("Delete word"),
+                        color: Colors.white10
                     ),
                   ),)],),),),),);}
 }
@@ -212,13 +197,11 @@ class RandomWords extends StatefulWidget {
   @override
   _RandomWordsState createState() => _RandomWordsState();
 }
-
-class AppController extends ChangeNotifier {
-  static AppController instance = AppController();
+class Controller extends ChangeNotifier {
+  static Controller instance = Controller();
 
   bool isSwitched = false;
-  changeView() {
-    isSwitched = !isSwitched;
+  changeView() {isSwitched = !isSwitched;
     notifyListeners();
   }
 }
