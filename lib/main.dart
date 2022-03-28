@@ -58,7 +58,7 @@ class _RandomWordsState extends State<RandomWords> {
                   ),
                   body: Controller.instance.isSwitched
                       ? Grid()
-                      : Suggestions()));});
+                      : suggestions()));});
   }
   Widget Grid() {
     return GridView.builder(
@@ -74,7 +74,7 @@ class _RandomWordsState extends State<RandomWords> {
         });
   }
 
-  Widget Suggestions() {
+  Widget suggestions() {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemBuilder: (BuildContext _context, int i) {
