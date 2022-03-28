@@ -51,12 +51,12 @@ class _RandomWordsState extends State<RandomWords> {
                     backgroundColor: Colors.deepPurple,
                   ),
                   body: AppController.instance.isSwitched
-                      ? _buildGridView()
-                      : _buildSuggestions()));
+                      ? Grid()
+                      : suggestions()));
         });
   }
 
-  Widget _buildGridView() {
+  Widget Grid() {
     return GridView.count(
       crossAxisCount: 2,
       mainAxisSpacing: 2,
@@ -66,12 +66,12 @@ class _RandomWordsState extends State<RandomWords> {
         if (i >= _suggestions.length || _suggestions.length <= 0) {
           _suggestions.addAll(generateWordPairs().take(10));
         }
-        return _buildRow(_suggestions[i]);
+        return buildRow(_suggestions[i]);
       }),
     );
   }
 
-  Widget _buildSuggestions() {
+  Widget suggestions() {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemBuilder: (BuildContext _context, int i) {
@@ -83,12 +83,12 @@ class _RandomWordsState extends State<RandomWords> {
         if (index >= _suggestions.length) {
           _suggestions.addAll(generateWordPairs().take(10));
         }
-        return _buildRow(_suggestions[index]);
+        return buildRow(_suggestions[index]);
       },
     );
   }
 
-  Widget _buildRow(WordPair pair) {
+  Widget buildRow(WordPair pair) {
     final alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
