@@ -2,8 +2,9 @@
 
 A new Flutter project.
 
--Ajustar a aplicação individual para armazenar os dados no Firebase Firestore Database.
--Disponibilizar o código em um branch denominado topico-7
++ Ajustar a aplicação individual para armazenar os dados no Firebase Firestore Database.
+
++ Disponibilizar o código em um branch denominado topico-7
 
 ## Getting Started
 
