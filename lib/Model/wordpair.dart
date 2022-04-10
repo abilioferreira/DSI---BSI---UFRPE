@@ -1,6 +1,6 @@
 class wordPair{
-  wordPair(String w1, String w2){
-    this.word = w1 + w2;
+  wordPair(String word1, String word2){
+    this.word = word1 + word2;
   }
-  String word = "";
+  String final_word = "";
 }
